@@ -1,0 +1,12 @@
+{
+  "name": "zegseg-scout",
+  "version": "1.0.0",
+  "description": "Zegseg Scout - Efficient Email Outreach Manager",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
