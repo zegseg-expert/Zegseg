@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zegseg Scout - Email Outreach Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Sora', sans-serif; background: #f0f4f8; min-height: 100vh; padding-bottom: 60px; }
+    .header {
+      background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+      padding: 20px 16px 16px;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 4px 20px #0f766e44;
+    }
+    .logo {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; color: #fff; letter-spacing: 1px;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .header-title { color: #fff; font-weight: 800; font-size: 20px; }
+    .header-sub { color: rgba(255,255,255,0.7); font-size: 12px; }
+    .container { padding: 16px; }
+    .card {
+      background: #fff; border-radius: 16px; padding: 16px;
+      margin-bottom: 14px; box-shadow: 0 2px 12px #0000000a;
+      border: 1px solid #f1f5f9;
+    }
+    .section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 16px; margin-bottom: 12px;
+    }
+    .section-sub { font-weight: 400; font-size: 13px; color: #94a3b8; }
+    .row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .recipient-count { color: #64748b; font-size: 13px; }
+    textarea, input[type="text"] {
+      width: 100%; padding: 11px 14px; border-radius: 10px;
+      border: 1.5px solid #e2e8f0; font-size: 13px;
+      background: #f8fafc; outline: none; font-family: 'Sora', sans-serif;
+      transition: border 0.2s;
+    }
+    textarea:focus, input[type="text"]:focus { border-color: #0f766e; }
+    #emailInput { min-height: 110px; resize: vertical; font-family: monospace; }
+    #bodyInput { min-height: 140px; resize: vertical; }
+    .hint { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+    .btn-outline {
+      padding: 8px 14px; border: 1.5px solid #e2e8f0; border-radius: 99px;
+      background: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+      color: #374151; font-family: 'Sora', sans-serif; white-space: nowrap;
+    }
+    .btn-outline:active { background: #f1f5f9; }
+    .btn-red { color: #ef4444; border-color: #fca5a5; }
+    .btn-tag {
+      padding: 5px 12px; border: 1.5px solid #0f766e; border-radius: 99px;
+      background: #f0fdf4; font-size: 12px; font-weight: 700; cursor: pointer;
+      color: #0f766e; font-family: 'Sora', sans-serif;
+    }
+    .btn-green {
+      width: 100%; background: linear-gradient(135deg, #0f766e, #0d9488);
+      color: #fff; border: none; border-radius: 12px; padding: 15px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 15px #0f766e44; font-family: 'Sora', sans-serif;
+    }
+    .btn-clear {
+      width: 100%; margin-top: 10px; background: transparent;
+      color: #ef4444; border: 1.5px solid #fca5a5; border-radius: 12px;
+      padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+      font-family: 'Sora', sans-serif;
+    }
+    .spam-box { border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 13px; }
+    .stats-bar { height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 8px; }
+    .stats-fill { height: 100%; background: linear-gradient(90deg, #0f766e, #14b8a6); border-radius: 99px; transition: width 0.5s; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .stat-box { background: #f0fdf4; border-radius: 10px; padding: 12px 14px; }
+    .stat-label { font-size: 10px; color: #64748b; font-weight: 700; letter-spacing: 0.5px; }
+    .stat-value { font-weight: 800; font-size: 20px; margin-top: 4px; color: #0f766e; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .toggle-wrap { display: flex; flex-direction: column; }
+    .toggle-title { font-weight: 700; font-size: 15px; }
+    .toggle-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .toggle {
+      width: 48px; height: 26px; border-radius: 99px; background: #cbd5e1;
+      cursor: pointer; position: relative; transition: background 0.2s; border: none;
+      flex-shrink: 0;
+    }
+    .toggle.on { background: #0f766e; }
+    .toggle-thumb {
+      position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; border-radius: 99px;
+      background: #fff; box-shadow: 0 1px 4px #0003; transition: left 0.2s;
+    }
+    .toggle.on .toggle-thumb { left: 25px; }
+    .preview-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .preview-title { font-weight: 700; font-size: 15px; }
+    .preview-meta { display: flex; gap: 10px; align-items: center; }
+    .sent-count { font-size: 13px; font-weight: 700; color: #0f766e; }
+    .tabs { display: flex; gap: 0; margin-bottom: 12px; background: #f1f5f9; border-radius: 10px; padding: 3px; }
+    .tab {
+      flex: 1; padding: 8px 4px; border: none; border-radius: 8px;
+      background: transparent; color: #64748b; font-weight: 500; font-size: 13px;
+      cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.2s;
+    }
+    .tab.active { background: #fff; color: #0f766e; font-weight: 700; box-shadow: 0 1px 4px #0002; }
+    .email-list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; }
+    .email-card {
+      background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px;
+      padding: 14px; display: flex; align-items: flex-start; gap: 12px; transition: all 0.2s;
+    }
+    .email-card.sent { background: #f0fdf4; border-color: #86efac; }
+    .email-card.compact { padding: 10px 14px; align-items: center; }
+    .email-num {
+      min-width: 32px; height: 32px; border-radius: 99px;
+      background: #e2e8f0; display: flex; align-items: center; justify-content: center;
+      color: #64748b; font-weight: 700; font-size: 13px;
+    }
+    .email-num.sent { background: #0f766e; color: #fff; }
+    .email-info { flex: 1; min-width: 0; }
+    .email-addr { font-weight: 700; color: #0f766e; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .email-name { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .email-preview { font-size: 12px; color: #374151; margin-top: 4px; background: #f8fafc; border-radius: 6px; padding: 6px 8px; }
+    .btn-send {
+      background: linear-gradient(135deg, #0f766e, #14b8a6); color: #fff;
+      border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px;
+      font-weight: 700; cursor: pointer; white-space: nowrap;
+      font-family: 'Sora', sans-serif; text-decoration: none;
+      display: inline-flex; align-items: center;
+    }
+    .compact-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748b; cursor: pointer; }
+    .toggle-sm { width: 36px; height: 20px; border-radius: 99px; background: #cbd5e1; cursor: pointer; position: relative; transition: background 0.2s; border: none; flex-shrink: 0; }
+    .toggle-sm.on { background: #0f766e; }
+    .toggle-sm .toggle-thumb { top: 2px; left: 2px; width: 16px; height: 16px; }
+    .toggle-sm.on .toggle-thumb { left: 18px; }
+    .modal-overlay { position: fixed; inset: 0; background: #0007; display: flex; align-items: flex-end; z-index: 1000; }
+    .modal { background: #fff; border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-height: 70vh; overflow-y: auto; }
+    .modal-title { font-weight: 800; font-size: 17px; margin-bottom: 16px; }
+    .template-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: #f8fafc; border-radius: 10px; padding: 10px 12px; }
+    .template-name { font-weight: 700; font-size: 14px; }
+    .template-date { font-size: 11px; color: #94a3b8; }
+    .btn-del { background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; }
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1e293b; color: #fff; border-radius: 99px; padding: 10px 20px;
+      font-size: 14px; font-weight: 600; box-shadow: 0 8px 30px #0005;
+      z-index: 999; white-space: nowrap; display: none;
+    }
+    .toast.show { display: block; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">ZS</div>
+  <div>
+    <div class="header-title">Zegseg Scout</div>
+    <div class="header-sub">Efficient email scouting manager</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="section-title">✉️ Recipients</div>
+    <div class="row">
+      <span class="recipient-count" id="recipientCount">0 recipients</span>
+      <button class="btn-outline" onclick="document.getElementById('csvFile').click()">⬆ Import CSV</button>
+      <button class="btn-outline btn-red" onclick="clearEmails()">Clear</button>
+      <input type="file" id="csvFile" accept=".csv,.txt" style="display:none" onchange="importCSV(event)" />
+    </div>
+    <textarea id="emailInput" placeholder="hello@example.com&#10;support@brand.com&#10;..." oninput="updateCount()"></textarea>
+    <div class="hint">Format: one email per line — name auto-extracted from email</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">📄 Subject Line <span class="section-sub">(optional)</span></div>
+    <input type="text" id="subjectInput" placeholder="e.g. Keep Your Store Checkout Running Smoothly" />
+  </div>
+
+  <div class="card">
+    <div class="section-title">💬 Message Body</div>
+    <div class="row">
+      <button class="btn-tag" onclick="insertTag('{name}')">👤 {name}</button>
+      <button class="btn-tag" onclick="insertTag('{email}')">📧 {email}</button>
+    </div>
+    <textarea id="bodyInput" placeholder="Hi {name},&#10;&#10;I noticed your store..."></textarea>
+  </div>
+
+  <div class="card">
+    <div class="row" style="margin-bottom:14px">
+      <button class="btn-outline" onclick="checkSpam()">🛡 Check Spam Score</button>
+      <button class="btn-outline" onclick="showSaveModal()">💾 Save Template</button>
+      <button class="btn-outline" id="loadBtn" onclick="showLoadModal()">📂 Load (0)</button>
+    </div>
+    <div id="spamResult" class="hidden spam-box"></div>
+    <button class="btn-green" onclick="generatePreviews()">➤ Generate Preview</button>
+    <button class="btn-clear" onclick="clearAll()">🗑️ Clear All Data</button>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-weight:700;font-size:15px">🎯 Total Scouted</div>
+      <div style="color:#0f766e;font-weight:800;font-size:22px" id="totalDisplay">0</div>
+    </div>
+    <div class="stats-bar"><div class="stats-fill" id="statsBar" style="width:0%"></div></div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-label">📅 TODAY SCOUTED</div><div class="stat-value" id="todayDisplay">0</div></div>
+      <div class="stat-box"><div class="stat-label">✅ TOTAL SCOUTED</div><div class="stat-value" id="totalDisplay2">0</div></div>
+      <div class="stat-box"><div class="stat-label">⏱ PER HOUR</div><div class="stat-value" id="perHourDisplay">—</div></div>
+      <div class="stat-box"><div class="stat-label">% WORKING RATE</div><div class="stat-value" id="rateDisplay">0%</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="toggle-row">
+      <div class="toggle-wrap">
+        <div class="toggle-title">▶ Auto Click</div>
+        <div class="toggle-sub">Enable to auto-open pending emails</div>
+      </div>
+      <button class="toggle" id="autoToggle" onclick="toggleAuto()"><div class="toggle-thumb"></div></button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="previewSection">
+    <div class="preview-header">
+      <div class="preview-title">✉️ Email Preview</div>
+      <div class="preview-meta">
+        <label class="compact-row">
+          <button class="toggle-sm" id="compactToggle" onclick="toggleCompact()"><div class="toggle-thumb"></div></button>
+          Compact
+        </label>
+        <span class="sent-count" id="sentCount">0/0 sent</span>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="tabAll" onclick="setTab('all')">All (0)</button>
+      <button class="tab" id="tabSent" onclick="setTab('sent')">Sent (0)</button>
+      <button class="tab" id="tabPending" onclick="setTab('pending')">Pending (0)</button>
+    </div>
+    <div class="email-list" id="emailList"></div>
+  </div>
+
+</div>
+
+<div class="modal-overlay hidden" id="saveModal" onclick="closeSaveModal(event)">
+  <div class="modal">
+    <div class="modal-title">💾 Save Template</div>
+    <input type="text" id="templateNameInput" placeholder="Template name..." style="margin-bottom:12px" />
+    <button class="btn-green" onclick="saveTemplate()">Save Template</button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="loadModal" onclick="closeLoadModal(event)">
+  <div class="modal">
+    <div class="modal-title">📂 Load Template</div>
+    <div id="templateList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const STORAGE_KEY = 'zs_total_scouted';
+  const TEMPLATES_KEY = 'zs_templates';
+  let previews = [], sentSet = new Set(), autoOn = false, compactOn = false, currentTab = 'all', autoTimer = null;
+  let sessionStart = Date.now();
+  let totalScouted = parseInt(localStorage.getItem(STORAGE_KEY) || '0');
+  let templates = JSON.parse(localStorage.getItem(TEMPLATES_KEY) || '[]');
+  const todayKey = 'zs_today_' + new Date().toDateString();
+  let todayScouted = parseInt(localStorage.getItem(todayKey) || '0');
+  updateStatsDisplay(); updateLoadBtn();
+
+  function extractName(email) {
+    return email.split('@')[0].replace(/[._+\-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim();
+  }
+  function parseEmails(text) {
+    return text.split(/[\n,;]+/).map(e => e.trim()).filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+  }
+  function updateCount() {
+    document.getElementById('recipientCount').textContent = parseEmails(document.getElementById('emailInput').value).length + ' recipients';
+  }
+  function clearEmails() { document.getElementById('emailInput').value = ''; updateCount(); }
+  function insertTag(tag) {
+    const el = document.getElementById('bodyInput');
+    const s = el.selectionStart, e = el.selectionEnd;
+    el.value = el.value.slice(0,s) + tag + el.value.slice(e);
+    el.selectionStart = el.selectionEnd = s + tag.length; el.focus();
+  }
+  function importCSV(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const emails = ev.target.result.split('\n').map(l => l.split(',')[0].trim()).filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+      const el = document.getElementById('emailInput');
+      el.value = (el.value ? el.value + '\n' : '') + emails.join('\n');
+      updateCount(); showToast('📥 ' + emails.length + ' emails imported');
+    };
+    reader.readAsText(file);
+  }
+  function checkSpam() {
+    const text = (document.getElementById('subjectInput').value + ' ' + document.getElementById('bodyInput').value).toLowerCase();
+    const hits = ['free','urgent','act now','click here','winner','guaranteed','no cost','cash','earn money','limited time','special offer','congratulations'].filter(w => text.includes(w));
+    const score = Math.min(hits.length * 15, 100);
+    const el = document.getElementById('spamResult'); el.classList.remove('hidden');
+    el.style.background = score > 50 ? '#fef2f2' : score > 20 ? '#fffbeb' : '#f0fdf4';
+    el.style.border = '1.5px solid ' + (score > 50 ? '#fca5a5' : score > 20 ? '#fcd34d' : '#86efac');
+    el.innerHTML = '<strong>Spam Score: ' + score + '%</strong>' + (hits.length ? '<div style="color:#64748b;margin-top:4px">Flagged: ' + hits.join(', ') + '</div>' : '<div style="color:#16a34a">✅ Looks clean!</div>');
+  }
+  function generatePreviews() {
+    const emails = parseEmails(document.getElementById('emailInput').value);
+    const body = document.getElementById('bodyInput').value;
+    if (!emails.length) { showToast('⚠️ No valid emails found'); return; }
+    if (!body.trim()) { showToast('⚠️ Message body is required'); return; }
+    const subject = document.getElementById('subjectInput').value || '(No Subject)';
+    previews = emails.map(email => ({ email, name: extractName(email), subject, body: body.replace(/\{name\}/gi, extractName(email)).replace(/\{email\}/gi, email) }));
+    sentSet = new Set(); currentTab = 'all';
+    document.getElementById('previewSection').classList.remove('hidden');
+    renderPreviews(); updateStatsDisplay();
+    showToast('✅ ' + emails.length + ' previews generated');
+    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+  }
+  function renderPreviews() {
+    const list = document.getElementById('emailList');
+    let displayed = previews;
+    if (currentTab === 'sent') displayed = previews.filter((_,i) => sentSet.has(i));
+    if (currentTab === 'pending') displayed = previews.filter((_,i) => !sentSet.has(i));
+    list.innerHTML = '';
+    displayed.forEach(p => {
+      const idx = previews.indexOf(p), sent = sentSet.has(idx);
+      const card = document.createElement('div');
+      card.className = 'email-card' + (sent ? ' sent' : '') + (compactOn ? ' compact' : '');
+      const num = document.createElement('div');
+      num.className = 'email-num' + (sent ? ' sent' : '');
+      num.textContent = sent ? '✓' : (idx + 1);
+      const info = document.createElement('div');
+      info.className = 'email-info';
+      info.innerHTML = '<div class="email-addr">' + p.email + '</div>';
+      if (!compactOn) {
+        info.innerHTML += '<div class="email-name">Name: ' + p.name + '</div>';
+        info.innerHTML += '<div class="email-preview">' + p.body.substring(0,80) + (p.body.length > 80 ? '...' : '') + '</div>';
+      }
+      card.appendChild(num); card.appendChild(info);
+      if (!sent) {
+        const btn = document.createElement('a');
+        btn.className = 'btn-send'; btn.textContent = 'Send ➤';
+        btn.href = 'mailto:' + encodeURIComponent(p.email) + '?subject=' + encodeURIComponent(p.subject) + '&body=' + encodeURIComponent(p.body);
+        btn.addEventListener('click', () => markSent(idx));
+        card.appendChild(btn);
+      }
+      list.appendChild(card);
+    });
+    const total = previews.length, sent = sentSet.size, pending = total - sent;
+    document.getElementById('sentCount').textContent = sent + '/' + total + ' sent';
+    document.getElementById('tabAll').textContent = 'All (' + total + ')';
+    document.getElementById('tabSent').textContent = 'Sent (' + sent + ')';
+    document.getElementById('tabPending').textContent = 'Pending (' + pending + ')';
+    ['tabAll','tabSent','tabPending'].forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById('tab' + currentTab.charAt(0).toUpperCase() + currentTab.slice(1)).classList.add('active');
+  }
+  function markSent(idx) {
+    setTimeout(() => {
+      sentSet.add(idx); totalScouted++;
+      localStorage.setItem(STORAGE_KEY, totalScouted);
+      todayScouted++; localStorage.setItem(todayKey, todayScouted);
+      updateStatsDisplay(); renderPreviews();
+      if (autoOn) scheduleNext();
+    }, 300);
+  }
+  function setTab(tab) { currentTab = tab; renderPreviews(); }
+  function toggleCompact() {
+    compactOn = !compactOn;
+    document.getElementById('compactToggle').classList.toggle('on', compactOn);
+    renderPreviews();
+  }
+  function toggleAuto() {
+    autoOn = !autoOn;
+    document.getElementById('autoToggle').classList.toggle('on', autoOn);
+    if (autoOn) scheduleNext(); else clearTimeout(autoTimer);
+  }
+  function scheduleNext() {
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => {
+      const idx = previews.findIndex((_,i) => !sentSet.has(i));
+      if (idx >= 0 && autoOn) {
+        const p = previews[idx];
+        window.location.href = 'mailto:' + encodeURIComponent(p.email) + '?subject=' + encodeURIComponent(p.subject) + '&body=' + encodeURIComponent(p.body);
+        markSent(idx);
+      }
+    }, 800);
+  }
+  function updateStatsDisplay() {
+    document.getElementById('totalDisplay').textContent = totalScouted;
+    document.getElementById('totalDisplay2').textContent = totalScouted;
+    document.getElementById('todayDisplay').textContent = todayScouted;
+    document.getElementById('statsBar').style.width = (totalScouted % 100) + '%';
+    document.getElementById('rateDisplay').textContent = (previews.length ? Math.round((sentSet.size / previews.length) * 100) : 0) + '%';
+    const elapsed = (Date.now() - sessionStart) / 3600000;
+    document.getElementById('perHourDisplay').textContent = elapsed > 0.01 ? Math.round(sentSet.size / elapsed) : '—';
+  }
+  function clearAll() {
+    document.getElementById('emailInput').value = '';
+    document.getElementById('subjectInput').value = '';
+    document.getElementById('bodyInput').value = '';
+    document.getElementById('spamResult').classList.add('hidden');
+    previews = []; sentSet = new Set();
+    document.getElementById('previewSection').classList.add('hidden');
+    updateCount(); updateStatsDisplay(); showToast('🗑️ All data cleared');
+  }
+  function updateLoadBtn() { document.getElementById('loadBtn').textContent = '📂 Load (' + templates.length + ')'; }
+  function showSaveModal() { document.getElementById('saveModal').classList.remove('hidden'); }
+  function closeSaveModal(e) { if (e.target === document.getElementById('saveModal')) document.getElementById('saveModal').classList.add('hidden'); }
+  function saveTemplate() {
+    const name = document.getElementById('templateNameInput').value.trim();
+    if (!name) { showToast('Enter a template name'); return; }
+    templates.push({ name, subject: document.getElementById('subjectInput').value, body: document.getElementById('bodyInput').value, date: new Date().toLocaleDateString() });
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+    updateLoadBtn();
+    document.getElementById('templateNameInput').value = '';
+    document.getElementById('saveModal').classList.add('hidden');
+    showToast('💾 Template saved!');
+  }
+  function showLoadModal() {
+    const list = document.getElementById('templateList');
+    list.innerHTML = !templates.length ? '<div style="color:#94a3b8;text-align:center;padding:20px 0">No saved templates yet.</div>' :
+      templates.map((t,i) => `<div class="template-item"><div style="flex:1"><div class="template-name">${t.name}</div><div class="template-date">${t.date}</div></div><button class="btn-outline" style="font-size:12px;padding:6px 10px" onclick="loadTemplate(${i})">Load</button><button class="btn-del" onclick="deleteTemplate(${i})">🗑</button></div>`).join('');
+    document.getElementById('loadModal').classList.remove('hidden');
+  }
+  function closeLoadModal(e) { if (e.target === document.getElementById('loadModal')) document.getElementById('loadModal').classList.add('hidden'); }
+  function loadTemplate(i) {
+    document.getElementById('subjectInput').value = templates[i].subject;
+    document.getElementById('bodyInput').value = templates[i].body;
+    document.getElementById('loadModal').classList.add('hidden');
+    showToast('📂 Loaded: ' + templates[i].name);
+  }
+  function deleteTemplate(i) {
+    templates.splice(i,1);
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+    updateLoadBtn(); showLoadModal();
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>
